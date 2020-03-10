@@ -1,5 +1,6 @@
 class Settings:
     def __init__(self):
+        self.debug = 1
         # Screen settings
         self.screen_res = 1200, 800
         self.bg_color = 230, 230, 230
@@ -7,6 +8,8 @@ class Settings:
         # Bullet settings
         self.bullet_speed_factor = 15
         self.bullet_width = 3
+        if self.debug:
+            self.bullet_width = 500
         self.bullet_height = 15
         self.bullet_color = 255, 0, 0
 

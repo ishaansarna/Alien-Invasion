@@ -11,28 +11,30 @@ def check_events(settings, screen, ship, bullets, stats, aliens, play_button):
             mouse_x, mouse_y = pygame.mouse.get_pos()
             if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
                 stats.game_active = 1
+                if stats.number_played:
+                    reset(settings, screen, aliens, bullets, ship, stats)
                 stats.number_played += 1
-                reset(settings, screen, aliens, bullets, ship, stats)
                 pygame.mouse.set_visible(False)
         elif event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                ship.moving += 5
-            elif event.key == pygame.K_LEFT:
-                ship.moving -= 5
-            elif event.key == pygame.K_SPACE:
-                if len(bullets) <= 2:
-                    new_bullet = Bullet(settings, screen, ship)
-                    bullets.add(new_bullet)
-            elif event.key == pygame.K_q:
-                sys.exit()
+        if stats.game_active:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    ship.moving += 5
+                elif event.key == pygame.K_LEFT:
+                    ship.moving -= 5
+                elif event.key == pygame.K_SPACE:
+                    if len(bullets) <= 2:
+                        new_bullet = Bullet(settings, screen, ship)
+                        bullets.add(new_bullet)
+                elif event.key == pygame.K_q:
+                    sys.exit()
 
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT:
-                ship.moving = 0
-            elif event.key == pygame.K_LEFT:
-                ship.moving = 0
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    ship.moving = 0
+                elif event.key == pygame.K_LEFT:
+                    ship.moving = 0
 
 
 def reset(settings, screen, aliens, bullets, ship, stats):
@@ -53,7 +55,7 @@ def create_fleet(settings, screen, aliens, ship_height, stats):
     number_aliens_x = int(((settings.screen_res[0] - 2 * alien.rect.width) / (2 * alien.rect.width)) - 1)
     available_space_y = settings.screen_res[1] - (3 * alien.rect.height) - ship_height
     number_rows = int(available_space_y / (2 * alien.rect.height))
-    stats.number_aliens = number_aliens_x * number_rows
+    stats.number_aliens = stats.number_aliens_start = number_aliens_x * number_rows
 
     for row_number in range(number_rows):
         for alien_number in range(number_aliens_x):
@@ -81,13 +83,17 @@ def drop_aliens(aliens):
 
 
 def collide(ship, aliens, bullets, settings, stats):
-    collide_dict = pygame.sprite.groupcollide(aliens, bullets, True, True)
+    if settings.debug:
+        collide_dict = pygame.sprite.groupcollide(aliens, bullets, True, False)
+    else:
+        collide_dict = pygame.sprite.groupcollide(aliens, bullets, True, False)
     if collide_dict:
         settings.alien_speed_factor *= settings.alien_speed_change_factor
         stats.number_aliens -= 1
         stats.score += 10
         if len(aliens) == 0 or stats.number_aliens == 0:
             stats.game_active = 0
+            pygame.mouse.set_visible(True)
     if pygame.sprite.spritecollideany(ship, aliens):
         print('Over')
         stats.game_active = 0
