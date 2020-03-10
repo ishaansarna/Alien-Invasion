@@ -9,10 +9,11 @@ def check_events(settings, screen, ship, bullets, stats, aliens, play_button):
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            if play_button.rect.collidepoint(mouse_x, mouse_y) and stats.game_active == 0:
+            if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
                 stats.game_active = 1
                 stats.number_played += 1
                 reset(settings, screen, aliens, bullets, ship, stats)
+                pygame.mouse.set_visible(False)
         elif event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
