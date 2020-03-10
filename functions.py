@@ -12,8 +12,7 @@ def check_events(settings, screen, ship, bullets, stats, aliens, play_button):
             if play_button.rect.collidepoint(mouse_x, mouse_y) and stats.game_active == 0:
                 stats.game_active = 1
                 stats.number_played += 1
-                if stats.number_played > 0 and stats.game_active == 0:
-                    reset(settings, screen, aliens, bullets, ship, stats)
+                reset(settings, screen, aliens, bullets, ship, stats)
         elif event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
@@ -81,7 +80,7 @@ def drop_aliens(aliens):
 
 
 def collide(ship, aliens, bullets, settings, stats):
-    collide_dict = pygame.sprite.groupcollide(aliens, bullets, True, False)
+    collide_dict = pygame.sprite.groupcollide(aliens, bullets, True, True)
     if collide_dict:
         settings.alien_speed_factor *= settings.alien_speed_change_factor
         stats.number_aliens -= 1
