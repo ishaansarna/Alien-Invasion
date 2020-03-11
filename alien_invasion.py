@@ -5,6 +5,7 @@ from settings import Settings
 from ship import Ship
 from stats import Stats
 from button import Button
+from scoreboard import Scoreboard
 
 
 def run_game():
@@ -18,11 +19,12 @@ def run_game():
     bullets = Group()
     aliens = Group()
     play_button = Button(settings, screen, 'Play')
+    scoreboard = Scoreboard(settings, screen, stats)
     fun.create_fleet(settings, screen, aliens, ship.rect.height, stats)
 
     # start the main loop for the game
     while True:
-        fun.check_events(settings, screen, ship, bullets, stats, aliens, play_button)
+        fun.check_events(settings, screen, ship, bullets, stats, aliens, play_button, scoreboard)
         if stats.game_active:
             ship.update()
             bullets.update()
@@ -30,7 +32,7 @@ def run_game():
             fun.drop_aliens(aliens)
             fun.collide(ship, aliens, bullets, settings, stats)
             fun.delete_bullets(bullets)
-        fun.update_screen(screen, settings, ship, bullets, aliens, stats, play_button)
+        fun.update_screen(screen, settings, ship, bullets, aliens, stats, play_button, scoreboard)
 
 
 if __name__ == '__main__':
