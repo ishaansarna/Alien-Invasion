@@ -114,5 +114,4 @@ def update_screen(screen, settings, ship, bullets, aliens, stats, play_button, s
         aliens.draw(screen)
         scoreboard.show_score()
         scoreboard.show_level()
-    print(stats.number_played)
     pygame.display.flip()
